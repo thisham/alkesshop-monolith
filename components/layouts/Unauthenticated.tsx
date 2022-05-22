@@ -17,7 +17,7 @@ const UnauthenticatedLayout: FC<UnauthenticatedLayoutProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar test="tet" />
+      <Navbar />
 
       <main className="min-h-screen p-16 flex flex-1 justify-center bg-gray-100 items-center">
         {props.children}

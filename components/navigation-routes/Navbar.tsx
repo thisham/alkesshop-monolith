@@ -1,10 +1,6 @@
 import { FC, MouseEventHandler } from "react";
 import { UserCircle } from "tabler-icons-react";
 
-type NavbarProps = {
-  test: string;
-};
-
 type ContainerProps = {
   children?: JSX.Element | string;
 };
@@ -14,7 +10,7 @@ type UserButtonProps = {
   action?: MouseEventHandler;
 };
 
-const Navbar: FC<NavbarProps> = (props) => {
+const Navbar: FC = () => {
   const Container: FC<ContainerProps> = (props) => (
     <div className="lg:w-4/5 w-5/6">{props.children}</div>
   );
