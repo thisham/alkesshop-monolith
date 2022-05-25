@@ -14,6 +14,8 @@ import TextAreaInput from "../components/input/TextAreaInput";
 import PhoneInput from "../components/input/PhoneInput";
 import SelectInput from "../components/input/SelectInput";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 enum GenderEnum {
   MALE = "Male",
@@ -22,6 +24,7 @@ enum GenderEnum {
 
 type RegisterInput = {
   username?: string;
+  fullname?: string;
   password?: string;
   passwordConfirmation?: string;
   email?: string;
@@ -35,9 +38,10 @@ type RegisterInput = {
 
 function useLogic() {
   const [registerInput, setRegisterInput] = useState<RegisterInput>();
+  const router = useRouter();
 
   const handleChange = (
-    e: FormEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: FormEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setRegisterInput({
       ...registerInput,
@@ -45,8 +49,22 @@ function useLogic() {
     });
   };
 
-  const submitRegisterHandler = () => {
-    alert(registerInput?.password);
+  const submitRegisterHandler = async () => {
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerInput),
+    }).then((res) => {
+      if (res.status !== 201) {
+        router.push("/register");
+        return;
+      }
+
+      Cookies.set("loggedIn", "true");
+      router.push("/");
+    });
   };
 
   return {
@@ -90,6 +108,14 @@ const Home: NextPage = () => {
             label="Username"
             onChange={utils.handleChange}
             placeholder="your.username_"
+          />
+
+          {/* fullname */}
+          <TextInput
+            inputName="fullname"
+            label="Nama Lengkap"
+            onChange={utils.handleChange}
+            placeholder="Nama Lengkap Anda"
           />
 
           {/* password */}
@@ -142,6 +168,7 @@ const Home: NextPage = () => {
 
           {/* city */}
           <SelectInput
+            inputName="city"
             masterLabel="Kota Domisili"
             defaultOptionTitle="Pilih Kota"
             options={[

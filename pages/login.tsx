@@ -8,6 +8,8 @@ import AuthButton from "../components/buttons/AuthButton";
 import TextInput from "../components/input/TextInput";
 import PasswordInput from "../components/input/PasswordInput";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 type LoginInput = {
   username?: string;
@@ -16,6 +18,7 @@ type LoginInput = {
 
 function useLogic() {
   const [loginInput, setLoginInput] = useState<LoginInput>();
+  const router = useRouter();
 
   const handleChange = (e: FormEvent<HTMLInputElement>) => {
     setLoginInput({
@@ -24,8 +27,22 @@ function useLogic() {
     });
   };
 
-  const submitLoginHandler = () => {
-    alert(loginInput?.password);
+  const submitLoginHandler = async () => {
+    fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginInput),
+    }).then((res) => {
+      if (res.status !== 201) {
+        router.push("/register");
+        return;
+      }
+
+      Cookies.set("loggedIn", "true");
+      router.push("/");
+    });
   };
 
   return {
