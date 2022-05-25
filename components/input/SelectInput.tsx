@@ -10,9 +10,10 @@ type SelectInputProps = {
   masterLabel: string;
   defaultOptionTitle: string;
   options: SelectItemProps[];
+  inputName: string;
 
   // handlers
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLSelectElement>;
 };
 
 const SelectInput: FC<SelectInputProps> = (props) => (
@@ -22,8 +23,10 @@ const SelectInput: FC<SelectInputProps> = (props) => (
     </label>
 
     <select
-      id="countries"
+      id={props.inputName}
       defaultValue=""
+      name={props.inputName}
+      onChange={props.onChange}
       className="border shadow-sm border-slate-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
     >
       <option value="" disabled>

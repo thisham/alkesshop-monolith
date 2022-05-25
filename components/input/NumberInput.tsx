@@ -1,28 +1,26 @@
 import { ChangeEventHandler, FC } from "react";
 
-type TextInputProps = {
+type NumberInputProps = {
   inputName: string;
   label: string;
-  value?: string;
+  defaultValue?: number;
   isRequired?: boolean;
-  isDisabled?: boolean;
   placeholder?: string;
 
   // handlers
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
-const TextInput: FC<TextInputProps> = (props) => (
+const NumberInput: FC<NumberInputProps> = (props) => (
   <>
     <label className="block text-gray-700 text-sm font-bold mb-2">
       {props.label}
     </label>
     <input
-      type="text"
+      type="number"
       name={props.inputName}
       id={props.inputName}
-      disabled={props.isDisabled}
-      value={props.value}
+      value={props.defaultValue}
       placeholder={props.placeholder}
       onChange={props.onChange}
       required={props.isRequired}
@@ -31,4 +29,4 @@ const TextInput: FC<TextInputProps> = (props) => (
   </>
 );
 
-export default TextInput;
+export default NumberInput;

@@ -20,6 +20,7 @@ const ProductCard: FC<ProductCardProps> = (props) => {
         <Image
           src={props.image}
           alt={props.imageAlt}
+          priority={true}
           layout="fill"
           className="object-cover"
         />
