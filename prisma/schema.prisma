@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+model User {
+  id String @id
+  username String @unique
+  fullname String
+  password String 
+  email String @unique
+  birthdate DateTime
+  gender Gender 
+  address String
+  city String
+  phone String
+  paypalID String @map("paypal_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  
+  shoppingReports ShoppingReport[]
+  carts Cart[]
+  @@map("users")
+}
+
+model ProductCategory {
+  id Int @id @default(autoincrement())
+  name String
+
+  products Product[]
+  @@map("product_categories")
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  price Float
+  image String?
+  productCategoryID Int @map("product_category_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  
+  productCategory ProductCategory @relation(fields: [productCategoryID], references: [id])
+  shoppingReportProductUserPivot ShoppingReportProductUserPivot[]
+  carts Cart[]
+  @@map("products")
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+  userID String @map("user_id")
+  productID Int @map("product_id")
+  quantity Int 
+  checkedOutAt DateTime? @map("checked_out_at")
+
+  user User @relation(fields: [userID], references: [id])
+  product Product @relation(fields: [productID], references: [id])
+  @@map("carts")
+}
+
+enum PaymentType {
+  POSTPAID
+  PREPAID
+}
+
+model ShoppingReport {
+  id Int @id @default(autoincrement())
+  userID String @map("user_id")
+  totalPayment Float @map("total_payment")
+  paymentType PaymentType @map("payment_type")
+  bankName String? @map("bank_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  user User @relation(fields: [userID], references: [id])
+  shoppingReportProductUserPivot ShoppingReportProductUserPivot[]
+  @@map("shopping_reports")
+}
+
+model ShoppingReportProductUserPivot {
+  shoppingReportID Int @map("shopping_report_id")
+  productID Int @map("product_id")
+  price Float
+  quantity Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  shoppingReport ShoppingReport @relation(fields: [shoppingReportID], references: [id])
+  product Product @relation(fields: [productID], references: [id])
+  @@id([shoppingReportID, productID])
+  @@map("shopping_report_product_user_pivots")
+}
